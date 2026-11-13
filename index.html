@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>POLI-LUNAR</title>
+<meta name="description" content="App interactiva sobre los objetos que la NASA ha perdido en el espacio.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="POLI-LUNAR">
+<meta property="og:description" content="App interactiva sobre los objetos que la NASA ha perdido en el espacio.">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap">
+<style>
+:root{--ink:#f2f0ff;--soft:#b9b6e0;--gold:#ffcf8a;--card:rgba(12,12,40,.72);--line:rgba(255,255,255,.22);color-scheme:dark;box-sizing:border-box}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#000;color:var(--ink);font:400 1rem/1.5 "Bricolage Grotesque",system-ui,sans-serif}
+canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
+#bg{display:none}
+button{font:inherit;cursor:pointer;color:inherit}
+#labels{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+.lb{position:absolute;left:0;top:0;font-size:12px;font-weight:600;color:#cfd0ee;text-shadow:0 0 4px #000;white-space:nowrap}
+.lb.has{color:var(--gold)}
+.lb.has::before{content:"● ";font-size:9px}
+#splash{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;background:radial-gradient(ellipse at center,rgba(0,0,0,.35),rgba(0,0,0,.8));transition:opacity .8s}
+#splash.off{opacity:0;pointer-events:none}
+#ttl{font-size:clamp(2.6rem,12vw,6rem);font-weight:800;letter-spacing:.04em;margin:0 0 14px;animation:ti 1.6s ease-out both}
+@keyframes ti{from{opacity:0;letter-spacing:.5em;transform:scale(.8)}to{opacity:1;letter-spacing:.04em;transform:none}}
+#intro{max-width:30ch;font-size:1.15rem;color:var(--soft);margin:0 0 26px;animation:fi 1s 1.4s both}
+#go{background:var(--gold);color:#1a1230;border:0;border-radius:999px;padding:12px 40px;font-weight:800;font-size:1.1rem;letter-spacing:.1em;animation:fi 1s 2.2s both}
+@keyframes fi{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+#menuBtn{position:fixed;z-index:9;top:calc(12px + env(safe-area-inset-top,0px));right:14px;width:46px;height:46px;border-radius:12px;border:1px solid var(--line);background:var(--card);display:flex;flex-direction:column;justify-content:center;gap:5px;padding:0 11px}
+#menuBtn i{display:block;height:3px;background:var(--ink);border-radius:2px}
+#menu{position:fixed;z-index:9;top:calc(66px + env(safe-area-inset-top,0px));right:14px;display:none;flex-direction:column;gap:6px;padding:8px;border-radius:12px;border:1px solid var(--line);background:rgba(10,10,34,.95)}
+#menu.open{display:flex}
+#menu button{background:none;border:0;padding:8px 18px;text-align:left;border-radius:8px}
+#menu button.cur{background:var(--gold);color:#1a1230;font-weight:800}
+#hint{position:fixed;z-index:3;left:0;right:0;bottom:calc(20px + env(safe-area-inset-bottom,0px));text-align:center;color:var(--soft);margin:0;display:none;padding:0 16px}
+#lst{position:fixed;inset:0;z-index:4;display:none;overflow:auto;padding:calc(70px + env(safe-area-inset-top,0px)) 18px 40px}
+#lst.on{display:block}
+#lst .in{max-width:860px;margin:0 auto}
+#back{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 16px;margin-bottom:14px}
+#lt{font-size:clamp(1.7rem,6vw,2.6rem);font-weight:800;margin:0;text-shadow:0 2px 10px #000}
+#ls{margin:4px 0 16px;text-shadow:0 1px 6px #000}
+#cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.cd{background:var(--card);backdrop-filter:blur(6px);border:2px solid var(--line);border-radius:14px;padding:14px;cursor:pointer;min-height:84px}
+.cd:hover,.cd:focus-visible{border-color:var(--gold);outline:none}
+.cd b{display:block;font-weight:800;line-height:1.2}
+.cd small{color:var(--soft)}
+#rb{position:fixed;z-index:6;left:0;right:0;bottom:0;display:none;align-items:flex-end;gap:10px;padding:14px 14px calc(14px + env(safe-area-inset-bottom,0px));max-width:760px;margin:0 auto}
+#rb.on{display:flex}
+#rob{flex:none;width:92px;height:auto}
+#bub{flex:1;background:rgba(12,12,40,.9);border:2px solid var(--gold);border-radius:18px 18px 18px 4px;padding:14px 16px;min-height:96px}
+#bt{margin:0 0 10px;font-size:1.05rem;min-height:3.2em}
+#cont{display:none;background:var(--gold);color:#1a1230;border:0;border-radius:999px;padding:8px 24px;font-weight:800}
+#mouth{transform-box:fill-box;transform-origin:center}
+.talk #mouth{animation:mo .22s infinite alternate}
+@keyframes mo{to{transform:scaleY(3.2)}}
+#ant{animation:bl 1.2s infinite alternate}
+@keyframes bl{to{opacity:.3}}
+#menu .sep{height:1px;background:var(--line);margin:2px 0}
+#info{position:fixed;inset:0;z-index:8;display:none;overflow:auto;background:rgba(3,3,18,.95);padding:calc(70px + env(safe-area-inset-top,0px)) 18px 40px}
+#info.on{display:block}
+#info .in{max-width:760px;margin:0 auto}
+#close{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 16px;margin-bottom:14px}
+#it{font-size:clamp(1.6rem,6vw,2.4rem);font-weight:800;margin:0 0 14px}
+#icards{display:grid;gap:12px}
+.ic{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.ic b{color:var(--gold);font-size:1.15rem}
+.ic span{font-size:1.7rem}
+.ic p{margin:4px 0 0}
+#snd{background:none;border:0;font-size:1.3rem;margin-left:12px;vertical-align:middle}
+@media (prefers-reduced-motion:reduce){#ttl,#intro,#go{animation:none}.talk #mouth{animation:none}}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<canvas id="bg"></canvas>
+<div id="labels"></div>
+<div id="splash"><h1 id="ttl">POLI-LUNAR</h1><p id="intro"></p><button id="go"></button></div>
+<button id="menuBtn" aria-label="Menu"><i></i><i></i><i></i></button>
+<div id="menu"><button data-l="es">Español</button><button data-l="en">English</button><div class="sep"></div><button id="mFacts"></button><button id="mNames"></button></div>
+<div id="info"><div class="in"><button id="close"></button><h2 id="it"></h2><div id="icards"></div></div></div>
+<p id="hint"></p>
+<div id="lst"><div class="in"><button id="back"></button><h2 id="lt"></h2><p id="ls"></p><div id="cards"></div></div></div>
+<div id="rb">
+<svg id="rob" viewBox="0 0 100 120" aria-hidden="true"><line x1="50" y1="8" x2="50" y2="24" stroke="#9fb4ff" stroke-width="4"/><circle id="ant" cx="50" cy="8" r="6" fill="#ff6a3d"/><rect x="18" y="24" width="64" height="50" rx="14" fill="#dfe6ff"/><rect x="26" y="32" width="48" height="34" rx="10" fill="#14163a"/><circle cx="40" cy="44" r="6" fill="#6cf0ff"/><circle cx="60" cy="44" r="6" fill="#6cf0ff"/><rect id="mouth" x="42" y="55" width="16" height="4" rx="2" fill="#6cf0ff"/><rect x="24" y="78" width="52" height="36" rx="10" fill="#b9c6ff"/><circle cx="50" cy="96" r="7" fill="#ff6a3d"/><rect x="8" y="80" width="12" height="26" rx="6" fill="#dfe6ff"/><rect x="80" y="80" width="12" height="26" rx="6" fill="#dfe6ff"/></svg>
+<div id="bub"><p id="bt"></p><button id="cont"></button><button id="snd" aria-label="Voz">🔊</button></div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+var $=function(i){return document.getElementById(i)},L="es",st="splash";
+var T={es:{intro:"Es una app para ver los objetos que ha perdido la NASA en el espacio.",go:"INICIO",hint:"Toca un planeta para enviar un cohete.",back:"← Sistema solar",cont:"Continuar",lt:"Objetos perdidos en ",ls:"Toca uno para que Poli te lo explique.",en:"Lanzado en ",mf:'¿Sabías qué?',mn:'¿Qué significan los nombres?',cl:'Cerrar'},
+en:{intro:"It’s an app to see the objects NASA has lost in space.",go:"START",hint:"Tap a planet to send a rocket.",back:"← Solar system",cont:"Continue",lt:"Lost objects on ",ls:"Tap one and Poli will explain it.",en:"Launched in ",mf:'Did you know?',mn:'What the names mean',cl:'Close'}};
+var S={cc:["Cabo Cañaveral, Florida","Cape Canaveral, Florida"],ksc:["Centro Espacial Kennedy, Florida","Kennedy Space Center, Florida"],van:["Base Vandenberg, California","Vandenberg Base, California"]};
+var O={
+venus:[["Mariner 1",1962,202,"cc",["Ser la primera sonda de EE. UU. en pasar cerca de Venus.","To be the first US probe to fly by Venus."],["El cohete se desvió por un error de guiado y lo destruyeron a los 5 minutos.","The rocket veered off course from a guidance error and was destroyed after 5 minutes."]]],
+tierra:[["Hubble",1990,11000,"ksc",["Observar el universo sin la distorsión de la atmósfera.","Observe the universe without atmospheric distortion."],["Su espejo estaba mal pulido y veía borroso. En 1993 le pusieron unas “gafas” (COSTAR).","Its mirror was ground wrong, so images were blurry. In 1993 it got “glasses” (COSTAR)."]],
+["Orbiting Carbon Observatory",2009,447,"van",["Medir el CO₂ del aire.","Measure carbon dioxide in the air."],["La cubierta del cohete no se separó y el satélite cayó al mar cerca de la Antártida.","The rocket fairing never separated and the satellite fell into the sea near Antarctica."]],
+["Glory",2011,545,"van",["Estudiar partículas del aire y el clima.","Study airborne particles and climate."],["Falló igual que el OCO: la cubierta no se soltó y cayó al Pacífico.","Same failure as OCO: the fairing stuck and it fell into the Pacific."]],
+["Genesis",2001,636,"cc",["Traer a la Tierra partículas del viento solar.","Bring solar wind particles back to Earth."],["Sus paracaídas no abrieron por sensores instalados al revés y se estrelló en Utah.","Its parachutes failed because sensors were installed backwards, and it crashed in Utah."]]],
+luna:[["Ranger 3",1962,330,"cc",["Tomar fotos de cerca de la Luna.","Take close-up photos of the Moon."],["Salió demasiado rápido, pasó a 36,800 km de la Luna y quedó orbitando el Sol.","It launched too fast, missed the Moon by 36,800 km and ended up orbiting the Sun."]],
+["Ranger 4",1962,331,"cc",["Fotografiar la Luna y llevar un sismómetro.","Photograph the Moon and carry a seismometer."],["Su computadora falló y chocó contra el lado oculto sin enviar datos.","Its computer failed and it hit the far side without sending data."]],
+["Ranger 6",1964,367,"cc",["Tomar miles de fotos antes de chocar con la Luna.","Take thousands of photos before crashing into the Moon."],["Llegó al Mar de la Tranquilidad, pero sus cámaras nunca se encendieron.","It reached the Sea of Tranquility, but its cameras never turned on."]],
+["Apollo 13 (Aquarius)",1970,15000,"ksc",["Llevar a tres astronautas a la Luna.","Carry three astronauts to the Moon."],["Explotó un tanque de oxígeno. Aquarius fue su bote salvavidas y se quemó al volver; todos regresaron sanos.","An oxygen tank exploded. Aquarius became a lifeboat and burned up on return; everyone came home safe."]]],
+marte:[["Mars Climate Orbiter",1998,638,"cc",["Estudiar el clima de Marte.","Study Martian weather."],["Un equipo usó libras-fuerza y otro newtons; entró muy bajo en Marte.","One team used pound-force and another newtons, so it entered Mars too low."]],
+["Mars Polar Lander",1999,583,"cc",["Buscar agua y hielo en el polo sur de Marte.","Look for water and ice near Mars’s south pole."],["Dejó de comunicarse al aterrizar; probablemente sus motores se apagaron antes de tiempo.","It went silent while landing; its engines likely shut off too early."]],
+["Rover Spirit",2003,185,"cc",["Buscar huellas de agua en rocas de Marte.","Look for signs of water in Martian rocks."],["Se atascó en arena suave en 2009 y no pudo apuntar sus paneles al Sol.","It got stuck in soft sand in 2009 and couldn’t aim its solar panels at the Sun."]],
+["Mars Observer",1992,2570,"cc",["Estudiar la geología y el clima de Marte.","Study Mars’s geology and climate."],["Perdió contacto tres días antes de llegar; quizá se rompió una línea de combustible.","It lost contact three days before arriving; a fuel line probably broke."]]],
+jupiter:[["Galileo",1989,2500,"ksc",["Estudiar Júpiter y sus lunas.","Study Jupiter and its moons."],["Su antena principal no abrió y envió datos muy lento. En 2003 se hundió en Júpiter a propósito.","Its main antenna never opened, so data came slowly. In 2003 it was sent into Jupiter on purpose."]]]};
+var infoMode='f',FACTS=[['🪐','En Venus un día dura más que un año: tarda unos 243 días terrestres en girar sobre sí mismo y solo 225 en darle la vuelta al Sol.','On Venus a day is longer than a year: it takes about 243 Earth days to spin once but only 225 to circle the Sun.'],['☀️','La luz del Sol tarda unos 8 minutos en llegar a la Tierra.','Sunlight takes about 8 minutes to reach Earth.'],['🌞','Dentro del Sol caben más de un millón de Tierras.','More than a million Earths could fit inside the Sun.'],['🌋','El volcán más alto del sistema solar es el Monte Olimpo, en Marte: mide cerca de 22 km, unas 2.5 veces el Everest.','The tallest volcano in the solar system is Olympus Mons on Mars: about 22 km, roughly 2.5 times Everest.'],['🛁','Saturno es menos denso que el agua: flotaría en una bañera lo bastante grande.','Saturn is less dense than water: it would float in a big enough bathtub.'],['💨','En Neptuno soplan los vientos más rápidos del sistema solar, de más de 2,000 km/h.','Neptune has the fastest winds in the solar system, over 2,000 km/h.'],['🌙','La Luna se aleja de la Tierra unos 3.8 cm cada año.','The Moon drifts away from Earth about 3.8 cm every year.'],['🔇','En el espacio no se oye nada, porque el sonido necesita aire para viajar.','Space is silent because sound needs air to travel.']],
+NM=[['mercurio','Viene del dios romano Mercurio, el mensajero de los dioses. Se lo pusieron porque es el planeta que más rápido da la vuelta al Sol.','Named after Mercury, the Roman messenger of the gods, because it circles the Sun faster than any other planet.'],['venus','Es la diosa romana del amor y la belleza. Brilla más que cualquier otro planeta en el cielo.','The Roman goddess of love and beauty. It shines brighter than any other planet in the sky.'],['tierra','Viene de la palabra latina terra, que significa suelo firme. Es el único planeta que no lleva nombre de un dios.','From an old word for ground and soil. It is the only planet not named after a god.'],['luna','Viene del latín Luna, “la que brilla”. También era la diosa romana de la Luna.','From the Latin Luna, “the shining one”. She was also the Roman goddess of the Moon.'],['marte','Es el dios romano de la guerra. Su color rojo recordaba a la sangre.','The Roman god of war. Its red color reminded people of blood.'],['jupiter','Es el rey de los dioses romanos. Como es el planeta más grande, le tocó el nombre del jefe.','The king of the Roman gods. As the biggest planet, it got the boss’s name.'],['saturno','Es el dios romano de la agricultura y las cosechas, y el papá de Júpiter.','The Roman god of farming and harvests, and Jupiter’s father.'],['urano','Viene de Urano, el dios griego del cielo. Es el único planeta con nombre griego en lugar de romano.','From Uranus, the Greek god of the sky. It is the only planet with a Greek name instead of a Roman one.'],['neptuno','Es el dios romano del mar. Su color azul recordó al océano.','The Roman god of the sea. Its blue color reminded people of the ocean.']];
+var BG={tierra:{s:["#3f86e0","#d4ebff"],g:"#4a7a3a",r:"#6b6b60",cl:1,m:[[.8,.18,.05,"#f4f4f4"]]},
+luna:{s:["#000","#07070d"],g:"#8c8c92",r:"#5b5b61",st:1,m:[[.72,.22,.09,"earth"]]},
+marte:{s:["#d9905e","#f3c9a0"],g:"#a8431f",r:"#6e2a12",m:[[.25,.2,.03,"#9a8a80"],[.62,.14,.018,"#8a7a70"]]},
+venus:{s:["#c78a2b","#f2d278"],g:"#7a4a1e",r:"#4a2a10",m:[]},
+jupiter:{b:1,s:["#8a5a35","#e6c79a"],m:[[.2,.22,.05,"#e8d070"],[.75,.3,.04,"#cfc8c0"],[.5,.1,.03,"#a09070"]]}};
+var PL=[
+{k:"mercurio",es:"Mercurio",en:"Mercury",or:5,sz:.7,sp:.36,b:"#8b8680",a:"#5d5954",t:"r"},
+{k:"venus",es:"Venus",en:"Venus",or:7.5,sz:1.1,sp:.26,b:"#d9a441",a:"#f0cf86",t:"c"},
+{k:"tierra",es:"Tierra",en:"Earth",or:10,sz:1.2,sp:.2,b:"#2f6fd1",a:"#3f9b4a",t:"l"},
+{k:"luna",es:"Luna",en:"Moon",sz:.45,sp:1.4,b:"#b8b8bd",a:"#7d7d84",t:"r"},
+{k:"marte",es:"Marte",en:"Mars",or:13,sz:.9,sp:.16,b:"#c4552d",a:"#8f3a1c",t:"r"},
+{k:"jupiter",es:"Júpiter",en:"Jupiter",or:17.5,sz:2.6,sp:.11,b:"#d6a373",a:"#a8683d",t:"b"},
+{k:"saturno",es:"Saturno",en:"Saturn",or:22,sz:2.1,sp:.08,b:"#e6d198",a:"#bfa468",t:"b",ring:1},
+{k:"urano",es:"Urano",en:"Uranus",or:26,sz:1.5,sp:.06,b:"#8adbe0",a:"#6ec2c9",t:"c"},
+{k:"neptuno",es:"Neptuno",en:"Neptune",or:30,sz:1.5,sp:.05,b:"#3b63d6",a:"#6f8df0",t:"c"}];
+function tex(b,a,t){var c=document.createElement("canvas");c.width=256;c.height=128;var x=c.getContext("2d"),s=5,i;function R(){s=(s*9301+49297)%233280;return s/233280}
+x.fillStyle=b;x.fillRect(0,0,256,128);x.fillStyle=a;
+if(t=="b"){for(i=0;i<14;i++){x.globalAlpha=.55;x.fillRect(0,i*9+R()*4,256,4+R()*6)}}
+else{for(i=0;i<70;i++){x.globalAlpha=.35+R()*.3;x.beginPath();x.arc(R()*256,R()*128,3+R()*(t=="c"?20:12),0,7);x.fill()}}
+return new THREE.CanvasTexture(c)}
+var ren=new THREE.WebGLRenderer({canvas:$("c"),antialias:true}),scene=new THREE.Scene(),cam=new THREE.PerspectiveCamera(55,1,.1,700),home=new THREE.Vector3(),look=new THREE.Vector3(),hits=[],W,H;
+ren.setPixelRatio(Math.min(devicePixelRatio,2));
+scene.add(new THREE.AmbientLight(0xffffff,.5));scene.add(new THREE.PointLight(0xffffff,1.7,0,1));
+scene.add(new THREE.Mesh(new THREE.SphereGeometry(3,32,20),new THREE.MeshBasicMaterial({color:0xffb92e})));
+var sp=[];for(var i=0;i<900;i++){var v=new THREE.Vector3(Math.random()-.5,Math.random()-.5,Math.random()-.5).normalize().multiplyScalar(250+Math.random()*100);sp.push(v.x,v.y,v.z)}
+var sg=new THREE.BufferGeometry();sg.setAttribute("position",new THREE.Float32BufferAttribute(sp,3));scene.add(new THREE.Points(sg,new THREE.PointsMaterial({color:0xffffff,size:1.1,sizeAttenuation:false})));
+var lbs=$("labels");
+PL.forEach(function(p){
+ p.piv=new THREE.Group();p.hold=new THREE.Group();p.piv.add(p.hold);
+ p.mesh=new THREE.Mesh(new THREE.SphereGeometry(p.sz,32,20),new THREE.MeshLambertMaterial({map:tex(p.b,p.a,p.t)}));p.hold.add(p.mesh);
+ var h=new THREE.Mesh(new THREE.SphereGeometry(Math.max(p.sz*1.3,1.4),8,6),new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false}));h.userData.p=p;p.mesh.add(h);hits.push(h);
+ if(p.k=="luna"){p.hold.position.x=2.4;PL[2].hold.add(p.piv)}
+ else{p.hold.position.x=p.or;scene.add(p.piv);var o=new THREE.Mesh(new THREE.RingGeometry(p.or-.04,p.or+.04,128),new THREE.MeshBasicMaterial({color:0x4a4a7a,transparent:true,opacity:.6,side:THREE.DoubleSide}));o.rotation.x=-Math.PI/2;scene.add(o)}
+ if(p.ring){var rg=new THREE.Mesh(new THREE.RingGeometry(p.sz*1.4,p.sz*2.3,48),new THREE.MeshBasicMaterial({color:0xcdb98a,side:THREE.DoubleSide,transparent:true,opacity:.8}));rg.rotation.x=Math.PI/2.3;p.hold.add(rg)}
+ p.lb=document.createElement("div");p.lb.className="lb"+(O[p.k]?" has":"");lbs.appendChild(p.lb);
+});
+var rk=new THREE.Group();
+(function(){var m=function(c){return new THREE.MeshLambertMaterial({color:c})},b=new THREE.Mesh(new THREE.CylinderGeometry(.2,.22,.7,16),m(0xf2f2f2));b.position.y=.35;rk.add(b);
+var n=new THREE.Mesh(new THREE.ConeGeometry(.2,.35,16),m(0xe8452c));n.position.y=.875;rk.add(n);
+for(var i=0;i<3;i++){var f=new THREE.Mesh(new THREE.BoxGeometry(.05,.28,.26),m(0xe8452c)),a=i*2.094;f.position.set(Math.cos(a)*.23,.14,Math.sin(a)*.23);f.rotation.y=-a;rk.add(f)}
+var w=new THREE.Mesh(new THREE.SphereGeometry(.07,12,8),m(0x6cf0ff));w.position.set(0,.55,.19);rk.add(w);
+rk.flame=new THREE.Mesh(new THREE.ConeGeometry(.15,.55,12),new THREE.MeshBasicMaterial({color:0xffa21f}));rk.flame.rotation.x=Math.PI;rk.flame.position.y=-.27;rk.add(rk.flame)})();
+rk.visible=false;scene.add(rk);
+function size(){W=innerWidth;H=innerHeight;ren.setSize(W,H);cam.aspect=W/H;cam.updateProjectionMatrix();var D=Math.max(52,30/(.52*Math.min(W/H,1.8)));home.set(0,D*.88,D*.48);if(st=="splash"||st=="space"){cam.position.copy(home);look.set(0,0,0);cam.lookAt(look)}if(st=="list"||st=="talk")bgDraw(cur.k)}
+var cur=null,LD=null,last=0,tmp=new THREE.Vector3();
+function ease(t){return 1-Math.pow(1-t,3)}
+function frame(t){requestAnimationFrame(frame);var dt=Math.min((t-last)/1000,.05);last=t;
+ if(st=="list"||st=="talk")return;
+ if(st=="splash"||st=="space")PL.forEach(function(p){p.piv.rotation.y+=p.sp*dt*.6});
+ PL.forEach(function(p){p.mesh.rotation.y+=.3*dt});
+ if(st=="land"){LD.t+=dt;var c=ease(Math.min(LD.t/1.3,1));cam.position.lerpVectors(LD.cf,LD.ct,c);look.lerpVectors(LD.lf,LD.lt,c);cam.lookAt(look);
+  var q=Math.min(LD.t/3.4,1),e=ease(q);rk.position.lerpVectors(LD.rs,LD.re,e);rk.rotation.z=(1-e)*.7;rk.flame.scale.y=q<1?.7+Math.random()*.6:.01;rk.flame.visible=q<1;
+  if(LD.t>4.2)showList()}
+ ren.render(scene,cam);
+ if(st=="space"||st=="splash"||st=="land")PL.forEach(function(p){p.mesh.getWorldPosition(tmp);tmp.y+=p.sz;tmp.project(cam);p.lb.style.display=st=="land"?"none":"block";p.lb.style.transform="translate("+((tmp.x*.5+.5)*W)+"px,"+((-tmp.y*.5+.5)*H-16)+"px) translateX(-50%)"})}
+function pick(p){if(!O[p.k]||st!="space")return;cur=p;st="land";$("hint").style.display="none";
+ var w=new THREE.Vector3();p.mesh.getWorldPosition(w);var r=p.sz,top=w.clone();top.y+=r;
+ LD={t:0,cf:cam.position.clone(),ct:w.clone().add(new THREE.Vector3(0,r*1.6,r*5.5)),lf:look.clone(),lt:w.clone().add(new THREE.Vector3(0,r*.8,0)),rs:top.clone().add(new THREE.Vector3(r*3.5,r*5,0)),re:top};
+ rk.scale.setScalar(r*.95);rk.position.copy(LD.rs);rk.rotation.set(0,0,0);rk.visible=true;rk.flame.visible=true}
+function showList(){st="list";$("c").style.display="none";$("bg").style.display="block";bgDraw(cur.k);$("lst").classList.add("on");buildList()}
+function buildList(){$("back").textContent=T[L].back;$("lt").textContent=T[L].lt+cur[L];$("ls").textContent=T[L].ls;var cs=$("cards");cs.innerHTML="";
+ O[cur.k].forEach(function(o,i){var d=document.createElement("div");d.className="cd";d.tabIndex=0;d.setAttribute("role","button");d.innerHTML="<b>"+o[0]+"</b><small>"+T[L].en+o[1]+"</small>";
+ var go=function(){speak(o)};d.onclick=go;d.onkeydown=function(e){if(e.key=="Enter"||e.key==" "){e.preventDefault();go()}};cs.appendChild(d)})}
+var obj=null,li=0,tm=null,tok=0,mute=false,VO=[],SS=window.speechSynthesis;
+if(SS){VO=SS.getVoices();SS.onvoiceschanged=function(){VO=SS.getVoices()}}
+function stopV(){if(SS)SS.cancel()}
+function voice(s,end){if(!SS||mute)return false;SS.cancel();var u=new SpeechSynthesisUtterance(s),lg=L=='es'?'es':'en',v=VO.filter(function(x){return x.lang.toLowerCase().indexOf(lg)==0});v=v.filter(function(x){return /google|natural|online/i.test(x.name)}).concat(v)[0];if(v)u.voice=v;u.lang=v?v.lang:(L=='es'?'es-MX':'en-US');u.pitch=.55;u.rate=1.02;u.onend=end;u.onerror=end;SS.speak(u);return true}
+function lines(o){var n=o[0],k=o[2].toLocaleString(L=="es"?"es-MX":"en-US"),j=L=="es"?0:1;
+ return L=="es"?["¡Hola! Soy Poli. Te cuento sobre "+n+". Pesaba aproximadamente "+k+" kg.","Se lanzó en "+o[1]+" desde "+S[o[3]][0]+".","Servía para esto: "+o[4][0],"Lo que pasó: "+o[5][0]]:
+ ["Hi! I’m Poli. Let me tell you about "+n+". It weighed about "+k+" kg.","It launched in "+o[1]+" from "+S[o[3]][1]+".","Its job: "+o[4][1],"What happened: "+o[5][1]]}
+function speak(o){obj=o;st="talk";$("lst").classList.remove("on");$("rb").classList.add("on");say(0)}
+function say(i){li=i;var s=lines(obj)[i],n=0,td=false,sd=true,tk=++tok;clearInterval(tm);function fin(){if(tk!=tok||$('cont').style.display=='inline-block')return;$('rob').classList.remove('talk');$('cont').style.display='inline-block';$('cont').textContent=T[L].cont}sd=!voice(s,function(){sd=true;if(td)fin()});$("bt").textContent="";$("cont").style.display="none";$("rob").classList.add("talk");
+ tm=setInterval(function(){n++;$("bt").textContent=s.slice(0,n);if(n>=s.length){clearInterval(tm);td=true;if(sd)fin();else setTimeout(fin,7000)}},45)}
+$('cont').onclick=function(){stopV();if(li<3)say(li+1);else{clearInterval(tm);$("rb").classList.remove("on");st="list";$("lst").classList.add("on")}};
+$("back").onclick=function(){$("lst").classList.remove("on");$("bg").style.display="none";$("c").style.display="block";st="space";rk.visible=false;cam.position.copy(home);look.set(0,0,0);cam.lookAt(look);$("hint").style.display="block"};
+function bgDraw(k){var c=$("bg"),w=c.width=innerWidth,h=c.height=innerHeight,x=c.getContext("2d"),B=BG[k],s=11,i,g;function R(){s=(s*9301+49297)%233280;return s/233280}
+ g=x.createLinearGradient(0,0,0,h);g.addColorStop(0,B.s[0]);g.addColorStop(1,B.s[1]);x.fillStyle=g;x.fillRect(0,0,w,h);
+ if(B.st)for(i=0;i<140;i++){x.fillStyle="rgba(255,255,255,"+(.3+R()*.7)+")";x.fillRect(R()*w,R()*h*.7,1.6,1.6)}
+ if(B.cl)for(i=0;i<8;i++){x.fillStyle="rgba(255,255,255,.55)";x.beginPath();x.ellipse(R()*w,h*(.08+R()*.35),60+R()*70,16+R()*14,0,0,7);x.fill()}
+ if(B.b){for(i=0;i<18;i++){x.fillStyle=i%2?"rgba(120,70,30,.5)":"rgba(255,235,200,.4)";x.fillRect(0,i*h/18,w,h/18*.75)}x.fillStyle="rgba(190,70,40,.8)";x.beginPath();x.ellipse(w*.62,h*.62,w*.09,h*.05,0,0,7);x.fill()}
+ B.m.forEach(function(m){var cx=m[0]*w,cy=m[1]*h,r=m[2]*Math.min(w,h)*2.2;
+  if(m[3]=="earth"){x.fillStyle="#2f6fd1";x.beginPath();x.arc(cx,cy,r,0,7);x.fill();x.fillStyle="#4aa35a";for(var j=0;j<6;j++){x.beginPath();x.arc(cx+(R()-.5)*r,cy+(R()-.5)*r,r*.25,0,7);x.fill()}}
+  else{var rg=x.createRadialGradient(cx-r*.3,cy-r*.3,r*.1,cx,cy,r);rg.addColorStop(0,m[3]);rg.addColorStop(1,"rgba(60,60,60,.9)");x.fillStyle=rg;x.beginPath();x.arc(cx,cy,r,0,7);x.fill();x.fillStyle="rgba(0,0,0,.15)";for(var j=0;j<5;j++){x.beginPath();x.arc(cx+(R()-.5)*r,cy+(R()-.5)*r,r*.14,0,7);x.fill()}}});
+ if(!B.b){x.fillStyle=B.g;x.beginPath();x.moveTo(0,h*.72);for(i=0;i<=12;i++)x.lineTo(i*w/12,h*(.66+R()*.08));x.lineTo(w,h);x.lineTo(0,h);x.fill();
+  for(i=0;i<80;i++){var y=h*(.72+R()*.28),z=(y/h-.6)*80*(.4+R());x.fillStyle=R()>.5?B.r:"rgba(0,0,0,.28)";x.beginPath();x.ellipse(R()*w,y,z,z*.55,0,0,7);x.fill()}}}
+function lang(l){L=l;document.documentElement.lang=l;$("intro").textContent=T[l].intro;$("go").textContent=T[l].go;$("hint").textContent=T[l].hint;
+ PL.forEach(function(p){p.lb.textContent=p[l]});
+ document.querySelectorAll('#menu [data-l]').forEach(function(b){b.classList.toggle('cur',b.dataset.l==l)});$('mFacts').textContent=T[l].mf;$('mNames').textContent=T[l].mn;$('close').textContent=T[l].cl;if($('info').classList.contains('on'))showInfo(infoMode);
+ if(st=="list")buildList();if(st=="talk")say(li)}
+$("menuBtn").onclick=function(){$("menu").classList.toggle("open")};
+document.querySelectorAll('#menu [data-l]').forEach(function(b){b.onclick=function(){lang(b.dataset.l);$('menu').classList.remove('open')}});
+$('mFacts').onclick=function(){showInfo('f');$('menu').classList.remove('open')};
+$('mNames').onclick=function(){showInfo('n');$('menu').classList.remove('open')};
+$('close').onclick=function(){$('info').classList.remove('on')};
+$('snd').onclick=function(){mute=!mute;$('snd').textContent=mute?'🔇':'🔊';if(mute)stopV()};
+function showInfo(m){infoMode=m;stopV();var j=L=='es'?1:2,h='';$('it').textContent=m=='f'?T[L].mf:T[L].mn;
+if(m=='f')FACTS.forEach(function(f){h+='<div class="ic"><span>'+f[0]+'</span><p>'+f[j]+'</p></div>'});
+else NM.forEach(function(n){var p=PL.filter(function(x){return x.k==n[0]})[0];h+='<div class="ic"><b>'+p[L]+'</b><p>'+n[j]+'</p></div>'});
+$('icards').innerHTML=h;$('info').classList.add('on')}
+$("go").onclick=function(){st="space";$("splash").classList.add("off");$("hint").style.display="block"};
+var rc=new THREE.Raycaster(),ms=new THREE.Vector2();
+$("c").addEventListener("pointerdown",function(e){if(st!="space")return;ms.set(e.clientX/W*2-1,-(e.clientY/H)*2+1);rc.setFromCamera(ms,cam);var h=rc.intersectObjects(hits);if(h.length)pick(h[0].object.userData.p)});
+addEventListener("resize",size);
+lang("es");size();requestAnimationFrame(frame);
+</script>
+</body>
+</html>
