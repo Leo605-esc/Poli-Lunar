@@ -56,6 +56,27 @@ button{font:inherit;cursor:pointer;color:inherit}
 @keyframes mo{to{transform:scaleY(3.2)}}
 #ant{animation:bl 1.2s infinite alternate}
 @keyframes bl{to{opacity:.3}}
+#sel{max-width:32ch;color:var(--gold);margin:22px 0 0;animation:fi 1s 3s both}
+#toast{position:fixed;z-index:7;left:50%;bottom:calc(60px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);width:max-content;max-width:min(90vw,360px);text-align:center;background:rgba(12,12,40,.95);border:2px solid var(--gold);border-radius:14px;padding:12px 18px;display:none}
+#toast.on{display:block}
+.hand{position:fixed;z-index:10;display:none;align-items:center;gap:8px;pointer-events:none}
+.hand.on{display:flex}
+.hand svg{width:44px;height:58px;animation:bob 1s infinite}
+@keyframes bob{50%{transform:translateY(10px)}}
+#hand1{top:calc(64px + env(safe-area-inset-top,0px));right:12px;flex-direction:row-reverse}
+#h1t{background:rgba(12,12,40,.95);border:2px solid var(--gold);border-radius:12px;padding:6px 12px;font-weight:600}
+#skipbox{position:fixed;z-index:10;top:calc(12px + env(safe-area-inset-top,0px));left:14px;display:none;flex-direction:column;align-items:flex-start;gap:4px}
+#skipbox.on{display:flex}
+#skip{background:var(--card);border:2px solid var(--gold);border-radius:999px;padding:10px 16px;font-weight:600}
+#skipbox svg{width:44px;height:58px;margin-left:30px;animation:bob 1s infinite}
+#tut{position:fixed;inset:0;z-index:11;display:none;align-items:center;justify-content:center;background:rgba(3,3,18,.8);padding:20px}
+#tut.on{display:flex}
+#tut .in{max-width:420px;background:#14143a;border:2px solid var(--gold);border-radius:18px;padding:22px;text-align:center}
+#tut h2{margin:4px 0}
+#tut p{font-size:1.1rem}
+#tn{background:var(--gold);color:#1a1230;border:0;border-radius:999px;padding:8px 24px;font-weight:800;margin:6px}
+#tx{background:none;border:1px solid var(--line);border-radius:999px;padding:8px 20px;margin:6px}
+#pic svg{width:130px;height:86px;display:block;margin-bottom:8px;background:rgba(255,255,255,.07);border-radius:10px;animation:fi .6s both}
 #menu .sep{height:1px;background:var(--line);margin:2px 0}
 #info{position:fixed;inset:0;z-index:8;display:none;overflow:auto;background:rgba(3,3,18,.95);padding:calc(70px + env(safe-area-inset-top,0px)) 18px 40px}
 #info.on{display:block}
@@ -67,6 +88,29 @@ button{font:inherit;cursor:pointer;color:inherit}
 .ic b{color:var(--gold);font-size:1.15rem}
 .ic span{font-size:1.7rem}
 .ic p{margin:4px 0 0}
+.ic a{color:var(--gold);word-break:break-all}
+#pic{display:none}
+#pimg{position:fixed;inset:0;z-index:5;display:none;background-size:cover;background-position:center}
+#pimg.on{display:block}
+#pimg{background-color:rgba(0,0,0,.45);overflow:hidden}
+#pimg .st{position:absolute;inset:0;background-image:radial-gradient(2px 2px at 20% 30%,#fff,transparent),radial-gradient(1.5px 1.5px at 70% 20%,#fff,transparent),radial-gradient(2px 2px at 50% 70%,#fff,transparent),radial-gradient(1.5px 1.5px at 85% 60%,#fff,transparent),radial-gradient(1.5px 1.5px at 10% 80%,#fff,transparent);animation:tw 2.5s infinite alternate}
+@keyframes tw{from{opacity:.25}to{opacity:1}}
+#pimg .ob{position:absolute;left:50%;top:26%;width:min(70vw,380px);transform:translate(-50%,-50%);animation:fl 4s ease-in-out infinite}
+#pimg .ob svg{width:100%;height:auto;display:block;filter:drop-shadow(0 0 18px rgba(255,207,138,.45))}
+@keyframes fl{0%,100%{transform:translate(-50%,-50%) rotate(-4deg)}50%{transform:translate(-50%,-58%) rotate(4deg)}}
+#pimg .ob.fall{animation:fa 5s ease-in infinite}
+@keyframes fa{0%{transform:translate(-50%,-90%) rotate(-6deg);opacity:0}15%{opacity:1}100%{transform:translate(-50%,-10%) rotate(4deg)}}
+#qz{position:fixed;inset:0;z-index:8;display:none;overflow:auto;background:rgba(3,3,18,.95);padding:calc(70px + env(safe-area-inset-top,0px)) 18px 40px}
+#qz.on{display:block}
+#qz .in{max-width:640px;margin:0 auto}
+#qx{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 16px;margin-bottom:14px}
+#qt{font-size:clamp(1.6rem,6vw,2.4rem);font-weight:800;margin:0 0 8px}
+#qp{font-size:1.1rem}
+#qa{display:grid;gap:10px;margin:12px 0}
+.op{background:var(--card);border:2px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer}
+.op.ok{border-color:#5be38a;background:rgba(91,227,138,.15)}
+.op.no{border-color:#ff6a6a;background:rgba(255,106,106,.15)}
+#qn{display:none;background:var(--gold);color:#1a1230;border:0;border-radius:999px;padding:8px 24px;font-weight:800}
 #snd{background:none;border:0;font-size:1.3rem;margin-left:12px;vertical-align:middle}
 @media (prefers-reduced-motion:reduce){#ttl,#intro,#go{animation:none}.talk #mouth{animation:none}}
 </style>
@@ -75,38 +119,51 @@ button{font:inherit;cursor:pointer;color:inherit}
 <canvas id="c"></canvas>
 <canvas id="bg"></canvas>
 <div id="labels"></div>
-<div id="splash"><h1 id="ttl">POLI-LUNAR</h1><p id="intro"></p><button id="go"></button></div>
+<div id="splash"><h1 id="ttl">POLI-LUNAR</h1><p id="intro"></p><button id="go"></button><p id="sel"></p></div>
+<div id="toast"></div>
+<div id='hand1' class='hand'><svg viewBox='0 0 60 80'><rect x='22' y='4' width='14' height='42' rx='7' fill='#dfe6ff' stroke='#6cf0ff' stroke-width='2'/><rect x='10' y='40' width='40' height='34' rx='10' fill='#b9c6ff' stroke='#6cf0ff' stroke-width='2'/><circle cx='30' cy='57' r='6' fill='#ff6a3d'/></svg><span id='h1t'></span></div>
+<div id='skipbox'><button id='skip'></button><svg viewBox='0 0 60 80'><rect x='22' y='4' width='14' height='42' rx='7' fill='#dfe6ff' stroke='#6cf0ff' stroke-width='2'/><rect x='10' y='40' width='40' height='34' rx='10' fill='#b9c6ff' stroke='#6cf0ff' stroke-width='2'/><circle cx='30' cy='57' r='6' fill='#ff6a3d'/></svg></div>
+<div id='tut'><div class='in'><div style='font-size:2.4rem'>🤖</div><h2 id='tt'></h2><p id='tp'></p><button id='tn'></button><button id='tx'></button></div></div>
 <button id="menuBtn" aria-label="Menu"><i></i><i></i><i></i></button>
-<div id="menu"><button data-l="es">Español</button><button data-l="en">English</button><div class="sep"></div><button id="mFacts"></button><button id="mNames"></button></div>
+<div id="menu"><button data-l="es">Español</button><button data-l="en">English</button><div class="sep"></div><button id="mFacts"></button><button id="mNames"></button><button id="mTut"></button><button id="mQuiz"></button><button id="mSrc"></button></div>
 <div id="info"><div class="in"><button id="close"></button><h2 id="it"></h2><div id="icards"></div></div></div>
 <p id="hint"></p>
 <div id="lst"><div class="in"><button id="back"></button><h2 id="lt"></h2><p id="ls"></p><div id="cards"></div></div></div>
+<div id='pimg'></div>
+<div id='qz'><div class='in'><button id='qx'></button><h2 id='qt'></h2><p id='qp'></p><div id='qa'></div><button id='qn'></button></div></div>
 <div id="rb">
 <svg id="rob" viewBox="0 0 100 120" aria-hidden="true"><line x1="50" y1="8" x2="50" y2="24" stroke="#9fb4ff" stroke-width="4"/><circle id="ant" cx="50" cy="8" r="6" fill="#ff6a3d"/><rect x="18" y="24" width="64" height="50" rx="14" fill="#dfe6ff"/><rect x="26" y="32" width="48" height="34" rx="10" fill="#14163a"/><circle cx="40" cy="44" r="6" fill="#6cf0ff"/><circle cx="60" cy="44" r="6" fill="#6cf0ff"/><rect id="mouth" x="42" y="55" width="16" height="4" rx="2" fill="#6cf0ff"/><rect x="24" y="78" width="52" height="36" rx="10" fill="#b9c6ff"/><circle cx="50" cy="96" r="7" fill="#ff6a3d"/><rect x="8" y="80" width="12" height="26" rx="6" fill="#dfe6ff"/><rect x="80" y="80" width="12" height="26" rx="6" fill="#dfe6ff"/></svg>
-<div id="bub"><p id="bt"></p><button id="cont"></button><button id="snd" aria-label="Voz">🔊</button></div>
+<div id="bub"><div id="pic"></div><p id="bt"></p><button id="cont"></button><button id="snd" aria-label="Voz">🔊</button></div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 var $=function(i){return document.getElementById(i)},L="es",st="splash";
-var T={es:{intro:"Es una app para ver los objetos que ha perdido la NASA en el espacio.",go:"INICIO",hint:"Toca un planeta para enviar un cohete.",back:"← Sistema solar",cont:"Continuar",lt:"Objetos perdidos en ",ls:"Toca uno para que Poli te lo explique.",en:"Lanzado en ",mf:'¿Sabías qué?',mn:'¿Qué significan los nombres?',cl:'Cerrar'},
-en:{intro:"It’s an app to see the objects NASA has lost in space.",go:"START",hint:"Tap a planet to send a rocket.",back:"← Solar system",cont:"Continue",lt:"Lost objects on ",ls:"Tap one and Poli will explain it.",en:"Launched in ",mf:'Did you know?',mn:'What the names mean',cl:'Close'}};
+var T={es:{intro:"Es una app para ver los objetos que ha perdido la NASA en el espacio.",go:"INICIO",hint:"Toca un planeta para enviar un cohete.",back:"← Sistema solar",cont:"Continuar",lt:"Objetos perdidos en ",ls:"Toca uno para que Poli te lo explique.",en:"Lanzado en ",mf:'¿Sabías qué?',mn:'¿Qué significan los nombres?',cl:'Cerrar',sel:'Selecciona el planeta para ver los objetos perdidos en el espacio por la NASA.',no:'En este planeta la NASA no ha perdido ningún objeto.',tu:'Tutorial',sk:'Saltar tutorial',h1:'Ver tutorial',nx:'Siguiente',ok:'Listo',qz:'Quiz',pq:'Pregunta',sc:'Sacaste',de:'de',rt:'Intentar de nuevo',fu:'Fuentes de información',fn:'Estos son sitios oficiales de la NASA para confirmar cada dato de la app.'},
+en:{intro:"It’s an app to see the objects NASA has lost in space.",go:"START",hint:"Tap a planet to send a rocket.",back:"← Solar system",cont:"Continue",lt:"Lost objects on ",ls:"Tap one and Poli will explain it.",en:"Launched in ",mf:'Did you know?',mn:'What the names mean',cl:'Close',sel:'Select a planet to see the objects NASA has lost in space.',no:'On this planet NASA has not lost any object.',tu:'Tutorial',sk:'Skip tutorial',h1:'See tutorial',nx:'Next',ok:'Done',qz:'Quiz',pq:'Question',sc:'You got',de:'out of',rt:'Try again',fu:'Sources',fn:'These are official NASA sites to confirm each fact in the app.'}};
 var S={cc:["Cabo Cañaveral, Florida","Cape Canaveral, Florida"],ksc:["Centro Espacial Kennedy, Florida","Kennedy Space Center, Florida"],van:["Base Vandenberg, California","Vandenberg Base, California"]};
 var O={
-venus:[["Mariner 1",1962,202,"cc",["Ser la primera sonda de EE. UU. en pasar cerca de Venus.","To be the first US probe to fly by Venus."],["El cohete se desvió por un error de guiado y lo destruyeron a los 5 minutos.","The rocket veered off course from a guidance error and was destroyed after 5 minutes."]]],
-tierra:[["Hubble",1990,11000,"ksc",["Observar el universo sin la distorsión de la atmósfera.","Observe the universe without atmospheric distortion."],["Su espejo estaba mal pulido y veía borroso. En 1993 le pusieron unas “gafas” (COSTAR).","Its mirror was ground wrong, so images were blurry. In 1993 it got “glasses” (COSTAR)."]],
-["Orbiting Carbon Observatory",2009,447,"van",["Medir el CO₂ del aire.","Measure carbon dioxide in the air."],["La cubierta del cohete no se separó y el satélite cayó al mar cerca de la Antártida.","The rocket fairing never separated and the satellite fell into the sea near Antarctica."]],
-["Glory",2011,545,"van",["Estudiar partículas del aire y el clima.","Study airborne particles and climate."],["Falló igual que el OCO: la cubierta no se soltó y cayó al Pacífico.","Same failure as OCO: the fairing stuck and it fell into the Pacific."]],
-["Genesis",2001,636,"cc",["Traer a la Tierra partículas del viento solar.","Bring solar wind particles back to Earth."],["Sus paracaídas no abrieron por sensores instalados al revés y se estrelló en Utah.","Its parachutes failed because sensors were installed backwards, and it crashed in Utah."]]],
-luna:[["Ranger 3",1962,330,"cc",["Tomar fotos de cerca de la Luna.","Take close-up photos of the Moon."],["Salió demasiado rápido, pasó a 36,800 km de la Luna y quedó orbitando el Sol.","It launched too fast, missed the Moon by 36,800 km and ended up orbiting the Sun."]],
-["Ranger 4",1962,331,"cc",["Fotografiar la Luna y llevar un sismómetro.","Photograph the Moon and carry a seismometer."],["Su computadora falló y chocó contra el lado oculto sin enviar datos.","Its computer failed and it hit the far side without sending data."]],
-["Ranger 6",1964,367,"cc",["Tomar miles de fotos antes de chocar con la Luna.","Take thousands of photos before crashing into the Moon."],["Llegó al Mar de la Tranquilidad, pero sus cámaras nunca se encendieron.","It reached the Sea of Tranquility, but its cameras never turned on."]],
-["Apollo 13 (Aquarius)",1970,15000,"ksc",["Llevar a tres astronautas a la Luna.","Carry three astronauts to the Moon."],["Explotó un tanque de oxígeno. Aquarius fue su bote salvavidas y se quemó al volver; todos regresaron sanos.","An oxygen tank exploded. Aquarius became a lifeboat and burned up on return; everyone came home safe."]]],
-marte:[["Mars Climate Orbiter",1998,638,"cc",["Estudiar el clima de Marte.","Study Martian weather."],["Un equipo usó libras-fuerza y otro newtons; entró muy bajo en Marte.","One team used pound-force and another newtons, so it entered Mars too low."]],
-["Mars Polar Lander",1999,583,"cc",["Buscar agua y hielo en el polo sur de Marte.","Look for water and ice near Mars’s south pole."],["Dejó de comunicarse al aterrizar; probablemente sus motores se apagaron antes de tiempo.","It went silent while landing; its engines likely shut off too early."]],
-["Rover Spirit",2003,185,"cc",["Buscar huellas de agua en rocas de Marte.","Look for signs of water in Martian rocks."],["Se atascó en arena suave en 2009 y no pudo apuntar sus paneles al Sol.","It got stuck in soft sand in 2009 and couldn’t aim its solar panels at the Sun."]],
-["Mars Observer",1992,2570,"cc",["Estudiar la geología y el clima de Marte.","Study Mars’s geology and climate."],["Perdió contacto tres días antes de llegar; quizá se rompió una línea de combustible.","It lost contact three days before arriving; a fuel line probably broke."]]],
-jupiter:[["Galileo",1989,2500,"ksc",["Estudiar Júpiter y sus lunas.","Study Jupiter and its moons."],["Su antena principal no abrió y envió datos muy lento. En 2003 se hundió en Júpiter a propósito.","Its main antenna never opened, so data came slowly. In 2003 it was sent into Jupiter on purpose."]]]};
-var infoMode='f',FACTS=[['🪐','En Venus un día dura más que un año: tarda unos 243 días terrestres en girar sobre sí mismo y solo 225 en darle la vuelta al Sol.','On Venus a day is longer than a year: it takes about 243 Earth days to spin once but only 225 to circle the Sun.'],['☀️','La luz del Sol tarda unos 8 minutos en llegar a la Tierra.','Sunlight takes about 8 minutes to reach Earth.'],['🌞','Dentro del Sol caben más de un millón de Tierras.','More than a million Earths could fit inside the Sun.'],['🌋','El volcán más alto del sistema solar es el Monte Olimpo, en Marte: mide cerca de 22 km, unas 2.5 veces el Everest.','The tallest volcano in the solar system is Olympus Mons on Mars: about 22 km, roughly 2.5 times Everest.'],['🛁','Saturno es menos denso que el agua: flotaría en una bañera lo bastante grande.','Saturn is less dense than water: it would float in a big enough bathtub.'],['💨','En Neptuno soplan los vientos más rápidos del sistema solar, de más de 2,000 km/h.','Neptune has the fastest winds in the solar system, over 2,000 km/h.'],['🌙','La Luna se aleja de la Tierra unos 3.8 cm cada año.','The Moon drifts away from Earth about 3.8 cm every year.'],['🔇','En el espacio no se oye nada, porque el sonido necesita aire para viajar.','Space is silent because sound needs air to travel.']],
+venus:[["Mariner 1",1962,203,"cc",["Ser la primera sonda de EE. UU. en pasar cerca de Venus.","To be the first US probe to fly by Venus."],["Se perdió porque el cohete se desvió de su rumbo por dos problemas combinados: una antena del cohete perdió la señal y falló una parte del guiado. Lo destruyeron unos 5 minutos después del despegue.","It was lost because the rocket veered off course from two combined problems: a rocket antenna lost its signal and part of the guidance failed. It was destroyed about 5 minutes after liftoff."],['36 días después la NASA lanzó Mariner 2, que fue la primera nave en pasar con éxito cerca de otro planeta.','NASA launched Mariner 2 just 36 days later, and it became the first spacecraft to fly past another planet successfully.']]],
+tierra:[["Hubble",1990,11000,"ksc",["Observar el universo sin la distorsión de la atmósfera.","Observe the universe without atmospheric distortion."],["Se dañó porque su espejo estaba mal pulido y veía borroso. En 1993 le pusieron unas “gafas” (COSTAR).","It was damaged because its mirror was ground wrong, so images were blurry. In 1993 it got “glasses” (COSTAR)."],['Sigue trabajando más de 30 años después y ha tenido cinco misiones de reparación con astronautas.','It is still working more than 30 years later and has had five repair missions with astronauts.']],
+["Orbiting Carbon Observatory",2009,447,"van",["Medir el CO₂ del aire.","Measure carbon dioxide in the air."],["Se perdió porque la cubierta del cohete no se separó y el satélite cayó al mar cerca de la Antártida.","It was lost because the rocket fairing never separated and the satellite fell into the sea near Antarctica."],['La NASA lanzó una copia, el OCO-2, en 2014, y esa sí llegó a su órbita.','NASA launched a copy, OCO-2, in 2014, and it did reach orbit.']],
+["Glory",2011,545,"van",["Estudiar partículas del aire y el clima.","Study airborne particles and climate."],["Se perdió porque falló igual que el OCO: la cubierta no se soltó y cayó al Pacífico.","It was lost because it had the same failure as OCO: the fairing stuck and it fell into the Pacific."],['Fue la segunda vez que el cohete Taurus falló con su cubierta, después del OCO.','It was the second time the Taurus rocket failed with its fairing, after OCO.']],
+["Genesis",2001,636,"cc",["Traer a la Tierra partículas del viento solar.","Bring solar wind particles back to Earth."],["Se estrelló en Utah porque sus paracaídas no abrieron, ya que sus sensores estaban instalados al revés.","It crashed in Utah because its parachutes failed, since its sensors were installed backwards."],['Aun así los científicos lograron rescatar parte de las muestras del viento solar.','Even so, scientists managed to recover some of the solar wind samples.']]],
+luna:[["Ranger 3",1962,330,"cc",["Tomar fotos de cerca de la Luna.","Take close-up photos of the Moon."],["Se perdió porque salió demasiado rápido, pasó a 36,800 km de la Luna y quedó orbitando el Sol.","It was lost because it launched too fast, missed the Moon by 36,800 km and ended up orbiting the Sun."],['No fue hasta Ranger 7, en 1964, cuando llegaron buenas fotos de la Luna.','Good Moon photos only arrived with Ranger 7, in 1964.']],
+["Ranger 4",1962,331,"cc",["Fotografiar la Luna y llevar un sismómetro.","Photograph the Moon and carry a seismometer."],["Se perdió porque su computadora falló y chocó contra el lado oculto sin enviar datos.","It was lost because its computer failed and it hit the far side without sending data."],['Fue la primera nave de EE. UU. en llegar a la Luna, aunque chocó sin mandar datos.','It was the first US spacecraft to reach the Moon, though it crashed without sending data.']],
+["Ranger 6",1964,367,"cc",["Tomar miles de fotos antes de chocar con la Luna.","Take thousands of photos before crashing into the Moon."],["Se perdió porque, aunque llegó al Mar de la Tranquilidad, sus cámaras nunca se encendieron.","It was lost because, although it reached the Sea of Tranquility, its cameras never turned on."],['Los ingenieros corrigieron el diseño y Ranger 7 sí tomó más de 4,000 fotos.','Engineers fixed the design and Ranger 7 took more than 4,000 photos.']],
+["Apollo 13 (Aquarius)",1970,15000,"ksc",["Llevar a tres astronautas a la Luna.","Carry three astronauts to the Moon."],["Se abortó la misión porque explotó un tanque de oxígeno. Aquarius fue su bote salvavidas y se quemó al volver; todos regresaron sanos.","The mission was aborted because an oxygen tank exploded. Aquarius became a lifeboat and burned up on return; everyone came home safe."],['Los astronautas eran Lovell, Swigert y Haise. Cayeron al océano Pacífico el 17 de abril de 1970.','The astronauts were Lovell, Swigert and Haise. They splashed down in the Pacific Ocean on April 17, 1970.']]],
+marte:[["Mars Climate Orbiter",1998,638,"cc",["Estudiar el clima de Marte.","Study Martian weather."],["Se perdió porque un equipo usó libras-fuerza y otro newtons, y entró muy bajo en Marte.","It was lost because one team used pound-force and another newtons, so it entered Mars too low."],['Este error de unidades costó unos 125 millones de dólares.','This unit mix-up cost about 125 million dollars.']],
+["Mars Polar Lander",1999,583,"cc",["Buscar agua y hielo en el polo sur de Marte.","Look for water and ice near Mars’s south pole."],["Se perdió porque dejó de comunicarse al aterrizar; probablemente sus motores se apagaron antes de tiempo.","It was lost because it went silent while landing; its engines likely shut off too early."],['Llevaba dos mini sondas, llamadas Deep Space 2, que también se perdieron.','It carried two mini probes, called Deep Space 2, which were also lost.']],
+["Rover Spirit",2003,185,"cc",["Buscar huellas de agua en rocas de Marte.","Look for signs of water in Martian rocks."],["Se perdió porque se atascó en arena suave en 2009 y no pudo apuntar sus paneles al Sol.","It was lost because it got stuck in soft sand in 2009 and couldn’t aim its solar panels at the Sun."],['Estaba hecho para durar 90 días y trabajó cerca de seis años.','It was built to last 90 days and worked for about six years.']],
+["Mars Observer",1992,2570,"cc",["Estudiar la geología y el clima de Marte.","Study Mars’s geology and climate."],["Se perdió porque dejó de comunicarse tres días antes de llegar; quizá se rompió una línea de combustible.","It was lost because it went silent three days before arriving; a fuel line probably broke."],['Fue la primera misión de la NASA a Marte en 17 años, desde las Viking.','It was NASA’s first Mars mission in 17 years, since the Vikings.']]],
+jupiter:[["Galileo",1989,2562,"ksc",["Estudiar Júpiter y sus lunas.","Study Jupiter and its moons."],["Se dañó porque su antena principal no se abrió por completo en 1991, así que usó antenas pequeñas y compresión de datos. En 2003 se hundió en Júpiter a propósito.","It was damaged because its main antenna did not fully open in 1991, so it used small antennas and data compression. In 2003 it was sent into Jupiter on purpose."],['Fue la primera nave en orbitar Júpiter y soltó una sonda que bajó a su atmósfera en 1995.','It was the first spacecraft to orbit Jupiter and released a probe that dropped into its atmosphere in 1995.']]]};
+var IM={'Hubble':'tel','Genesis':'cap','Mars Polar Lander':'lan','Rover Spirit':'rov','Apollo 13 (Aquarius)':'apo'},IMG={
+sat:`<svg viewBox='0 0 120 80'><rect x='4' y='30' width='34' height='20' fill='#3b63d6' stroke='#9fb4ff'/><rect x='82' y='30' width='34' height='20' fill='#3b63d6' stroke='#9fb4ff'/><path d='M15 30v20M26 30v20M93 30v20M104 30v20' stroke='#9fb4ff'/><rect x='38' y='26' width='44' height='28' rx='4' fill='#e8e8f2'/><circle cx='60' cy='40' r='7' fill='#ffcf8a'/><path d='M60 26V14' stroke='#e8e8f2' stroke-width='2'/><path d='M50 14q10-10 20 0z' fill='#ffcf8a'/></svg>`,
+tel:`<svg viewBox='0 0 120 80'><rect x='52' y='4' width='14' height='20' fill='#3b63d6' stroke='#9fb4ff'/><rect x='52' y='58' width='14' height='20' fill='#3b63d6' stroke='#9fb4ff'/><rect x='28' y='26' width='64' height='30' rx='6' fill='#c8ccd8'/><rect x='84' y='24' width='14' height='34' rx='3' fill='#7d83a0'/><circle cx='28' cy='41' r='15' fill='#2a2e55' stroke='#e8e8f2' stroke-width='2'/></svg>`,
+cap:`<svg viewBox='0 0 120 80'><path d='M20 18Q60 0 100 18L88 66H32Z' fill='#d8d8e4'/><path d='M32 66h56v8H32z' fill='#7d83a0'/><circle cx='60' cy='40' r='6' fill='#ffcf8a'/></svg>`,
+lan:`<svg viewBox='0 0 120 80'><rect x='14' y='26' width='24' height='10' fill='#3b63d6'/><rect x='82' y='26' width='24' height='10' fill='#3b63d6'/><rect x='40' y='20' width='40' height='26' rx='4' fill='#e8e8f2'/><path d='M44 46L26 70M76 46L94 70M60 46V70' stroke='#9fb4ff' stroke-width='3'/><path d='M20 70h16M84 70h16M52 70h16' stroke='#ffcf8a' stroke-width='3'/></svg>`,
+rov:`<svg viewBox='0 0 120 80'><rect x='28' y='30' width='64' height='16' rx='4' fill='#e8e8f2'/><rect x='34' y='24' width='40' height='6' fill='#3b63d6'/><path d='M82 30V14' stroke='#e8e8f2' stroke-width='3'/><rect x='75' y='8' width='14' height='8' rx='2' fill='#ffcf8a'/><circle cx='36' cy='56' r='8' fill='#55587a' stroke='#e8e8f2'/><circle cx='60' cy='56' r='8' fill='#55587a' stroke='#e8e8f2'/><circle cx='84' cy='56' r='8' fill='#55587a' stroke='#e8e8f2'/></svg>`,
+apo:`<svg viewBox='0 0 120 80'><path d='M40 14h40l10 20v14H30V34z' fill='#ffcf8a'/><rect x='34' y='48' width='52' height='12' fill='#c8ccd8'/><path d='M36 60L20 74M84 60L100 74M60 60V74' stroke='#9fb4ff' stroke-width='3'/><circle cx='60' cy='30' r='6' fill='#14163a'/></svg>`};
+var infoMode='f',FACTS=[['🪐','En Venus un día dura más que un año: tarda unos 243 días terrestres en girar sobre sí mismo y solo 225 en darle la vuelta al Sol.','On Venus a day is longer than a year: it takes about 243 Earth days to spin once but only 225 to circle the Sun.'],['☀️','La luz del Sol tarda unos 8 minutos en llegar a la Tierra.','Sunlight takes about 8 minutes to reach Earth.'],['🌞','Dentro del Sol caben más de un millón de Tierras.','More than a million Earths could fit inside the Sun.'],['🌋','El volcán más alto del sistema solar es el Monte Olimpo, en Marte: mide unos 25 km, casi tres veces el Everest.','The tallest volcano in the solar system is Olympus Mons on Mars: about 25 km, nearly three times Everest.'],['🛁','Saturno es menos denso que el agua: flotaría en una bañera lo bastante grande.','Saturn is less dense than water: it would float in a big enough bathtub.'],['💨','En Neptuno soplan los vientos más rápidos del sistema solar, de más de 2,000 km/h.','Neptune has the fastest winds in the solar system, over 2,000 km/h.'],['🌙','La Luna se aleja de la Tierra unos 3.8 cm cada año.','The Moon drifts away from Earth about 3.8 cm every year.'],['🔇','En el espacio no se oye nada, porque el sonido necesita aire para viajar.','Space is silent because sound needs air to travel.']],
 NM=[['mercurio','Viene del dios romano Mercurio, el mensajero de los dioses. Se lo pusieron porque es el planeta que más rápido da la vuelta al Sol.','Named after Mercury, the Roman messenger of the gods, because it circles the Sun faster than any other planet.'],['venus','Es la diosa romana del amor y la belleza. Brilla más que cualquier otro planeta en el cielo.','The Roman goddess of love and beauty. It shines brighter than any other planet in the sky.'],['tierra','Viene de la palabra latina terra, que significa suelo firme. Es el único planeta que no lleva nombre de un dios.','From an old word for ground and soil. It is the only planet not named after a god.'],['luna','Viene del latín Luna, “la que brilla”. También era la diosa romana de la Luna.','From the Latin Luna, “the shining one”. She was also the Roman goddess of the Moon.'],['marte','Es el dios romano de la guerra. Su color rojo recordaba a la sangre.','The Roman god of war. Its red color reminded people of blood.'],['jupiter','Es el rey de los dioses romanos. Como es el planeta más grande, le tocó el nombre del jefe.','The king of the Roman gods. As the biggest planet, it got the boss’s name.'],['saturno','Es el dios romano de la agricultura y las cosechas, y el papá de Júpiter.','The Roman god of farming and harvests, and Jupiter’s father.'],['urano','Viene de Urano, el dios griego del cielo. Es el único planeta con nombre griego en lugar de romano.','From Uranus, the Greek god of the sky. It is the only planet with a Greek name instead of a Roman one.'],['neptuno','Es el dios romano del mar. Su color azul recordó al océano.','The Roman god of the sea. Its blue color reminded people of the ocean.']];
 var BG={tierra:{s:["#3f86e0","#d4ebff"],g:"#4a7a3a",r:"#6b6b60",cl:1,m:[[.8,.18,.05,"#f4f4f4"]]},
 luna:{s:["#000","#07070d"],g:"#8c8c92",r:"#5b5b61",st:1,m:[[.72,.22,.09,"earth"]]},
@@ -137,7 +194,7 @@ var sg=new THREE.BufferGeometry();sg.setAttribute("position",new THREE.Float32Bu
 var lbs=$("labels");
 PL.forEach(function(p){
  p.piv=new THREE.Group();p.hold=new THREE.Group();p.piv.add(p.hold);
- p.mesh=new THREE.Mesh(new THREE.SphereGeometry(p.sz,32,20),new THREE.MeshLambertMaterial({map:tex(p.b,p.a,p.t)}));p.hold.add(p.mesh);
+ p.mesh=new THREE.Mesh(new THREE.SphereGeometry(p.sz,32,20),new THREE.MeshLambertMaterial({map:tex(p.b,p.a,p.t)}));p.hold.add(p.mesh);p.hold.scale.setScalar(p.k=='luna'?1:1.35);
  var h=new THREE.Mesh(new THREE.SphereGeometry(Math.max(p.sz*1.3,1.4),8,6),new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false}));h.userData.p=p;p.mesh.add(h);hits.push(h);
  if(p.k=="luna"){p.hold.position.x=2.4;PL[2].hold.add(p.piv)}
  else{p.hold.position.x=p.or;scene.add(p.piv);var o=new THREE.Mesh(new THREE.RingGeometry(p.or-.04,p.or+.04,128),new THREE.MeshBasicMaterial({color:0x4a4a7a,transparent:true,opacity:.6,side:THREE.DoubleSide}));o.rotation.x=-Math.PI/2;scene.add(o)}
@@ -156,15 +213,16 @@ var cur=null,LD=null,last=0,tmp=new THREE.Vector3();
 function ease(t){return 1-Math.pow(1-t,3)}
 function frame(t){requestAnimationFrame(frame);var dt=Math.min((t-last)/1000,.05);last=t;
  if(st=="list"||st=="talk")return;
- if(st=="splash"||st=="space")PL.forEach(function(p){p.piv.rotation.y+=p.sp*dt*.6});
+ if(st=="splash"||st=="space")PL.forEach(function(p){p.piv.rotation.y+=p.sp*dt*.17});
  PL.forEach(function(p){p.mesh.rotation.y+=.3*dt});
  if(st=="land"){LD.t+=dt;var c=ease(Math.min(LD.t/1.3,1));cam.position.lerpVectors(LD.cf,LD.ct,c);look.lerpVectors(LD.lf,LD.lt,c);cam.lookAt(look);
   var q=Math.min(LD.t/3.4,1),e=ease(q);rk.position.lerpVectors(LD.rs,LD.re,e);rk.rotation.z=(1-e)*.7;rk.flame.scale.y=q<1?.7+Math.random()*.6:.01;rk.flame.visible=q<1;
   if(LD.t>4.2)showList()}
  ren.render(scene,cam);
- if(st=="space"||st=="splash"||st=="land")PL.forEach(function(p){p.mesh.getWorldPosition(tmp);tmp.y+=p.sz;tmp.project(cam);p.lb.style.display=st=="land"?"none":"block";p.lb.style.transform="translate("+((tmp.x*.5+.5)*W)+"px,"+((-tmp.y*.5+.5)*H-16)+"px) translateX(-50%)"})}
-function pick(p){if(!O[p.k]||st!="space")return;cur=p;st="land";$("hint").style.display="none";
- var w=new THREE.Vector3();p.mesh.getWorldPosition(w);var r=p.sz,top=w.clone();top.y+=r;
+ if(st=="space"||st=="splash"||st=="land")PL.forEach(function(p){p.mesh.getWorldPosition(tmp);tmp.y+=p.sz*1.35;tmp.project(cam);p.lb.style.display=st=="land"?"none":"block";p.lb.style.transform="translate("+((tmp.x*.5+.5)*W)+"px,"+((-tmp.y*.5+.5)*H-16)+"px) translateX(-50%)"})}
+var tt=null;function toast(p){var t=$('toast');t.textContent=p[L]+': '+T[L].no;t.classList.add('on');clearTimeout(tt);tt=setTimeout(function(){t.classList.remove('on')},3200)}
+function pick(p){if(st!="space")return;if(!O[p.k]){toast(p);return}cur=p;$('toast').classList.remove('on');hideHints();st="land";$("hint").style.display="none";
+ var w=new THREE.Vector3();p.mesh.getWorldPosition(w);var r=p.sz*1.35,top=w.clone();top.y+=r;
  LD={t:0,cf:cam.position.clone(),ct:w.clone().add(new THREE.Vector3(0,r*1.6,r*5.5)),lf:look.clone(),lt:w.clone().add(new THREE.Vector3(0,r*.8,0)),rs:top.clone().add(new THREE.Vector3(r*3.5,r*5,0)),re:top};
  rk.scale.setScalar(r*.95);rk.position.copy(LD.rs);rk.rotation.set(0,0,0);rk.visible=true;rk.flame.visible=true}
 function showList(){st="list";$("c").style.display="none";$("bg").style.display="block";bgDraw(cur.k);$("lst").classList.add("on");buildList()}
@@ -175,13 +233,13 @@ var obj=null,li=0,tm=null,tok=0,mute=false,VO=[],SS=window.speechSynthesis;
 if(SS){VO=SS.getVoices();SS.onvoiceschanged=function(){VO=SS.getVoices()}}
 function stopV(){if(SS)SS.cancel()}
 function voice(s,end){if(!SS||mute)return false;SS.cancel();var u=new SpeechSynthesisUtterance(s),lg=L=='es'?'es':'en',v=VO.filter(function(x){return x.lang.toLowerCase().indexOf(lg)==0});v=v.filter(function(x){return /google|natural|online/i.test(x.name)}).concat(v)[0];if(v)u.voice=v;u.lang=v?v.lang:(L=='es'?'es-MX':'en-US');u.pitch=.55;u.rate=1.02;u.onend=end;u.onerror=end;SS.speak(u);return true}
-function lines(o){var n=o[0],k=o[2].toLocaleString(L=="es"?"es-MX":"en-US"),j=L=="es"?0:1;
- return L=="es"?["¡Hola! Soy Poli. Te cuento sobre "+n+". Pesaba aproximadamente "+k+" kg.","Se lanzó en "+o[1]+" desde "+S[o[3]][0]+".","Servía para esto: "+o[4][0],"Lo que pasó: "+o[5][0]]:
- ["Hi! I’m Poli. Let me tell you about "+n+". It weighed about "+k+" kg.","It launched in "+o[1]+" from "+S[o[3]][1]+".","Its job: "+o[4][1],"What happened: "+o[5][1]]}
-function speak(o){obj=o;st="talk";$("lst").classList.remove("on");$("rb").classList.add("on");say(0)}
-function say(i){li=i;var s=lines(obj)[i],n=0,td=false,sd=true,tk=++tok;clearInterval(tm);function fin(){if(tk!=tok||$('cont').style.display=='inline-block')return;$('rob').classList.remove('talk');$('cont').style.display='inline-block';$('cont').textContent=T[L].cont}sd=!voice(s,function(){sd=true;if(td)fin()});$("bt").textContent="";$("cont").style.display="none";$("rob").classList.add("talk");
+function lines(o){var lc=function(s){return s.replace(/^([A-ZÁÉÍÓÚ])(?=[a-záéíóúñ])/,function(c){return c.toLowerCase()})},n=o[0],k=o[2].toLocaleString(L=="es"?"es-MX":"en-US"),j=L=="es"?0:1;
+ return L=="es"?["¡Hola! Soy Poli. Te voy a contar sobre "+n+". Pesaba aproximadamente "+k+" kg y se lanzó en "+o[1]+" desde "+S[o[3]][0]+".","Servía para "+lc(o[4][0]).replace(/\.$/,"")+".",o[5][0],"Por cierto, "+lc(o[6][0])]:
+ ["Hi! I’m Poli. Let me tell you about "+n+". It weighed about "+k+" kg and launched in "+o[1]+" from "+S[o[3]][1]+".","It was built to "+lc(o[4][1].replace(/^To /,"")).replace(/\.$/,"")+".",o[5][1],"By the way, "+lc(o[6][1])]}
+function speak(o){obj=o;st="talk";setPic(o);$("lst").classList.remove("on");$("rb").classList.add("on");say(0)}
+function say(i){li=i;var s=lines(obj)[i],n=0,td=false,sd=true,dn=false,tk=++tok;clearInterval(tm);function fin(){if(tk!=tok||dn)return;dn=true;if(i<lines(obj).length-1){setTimeout(function(){if(tk==tok)say(i+1)},200);return}$('rob').classList.remove('talk');$('cont').style.display='inline-block';$('cont').textContent=T[L].cont}sd=!voice(s,function(){sd=true;if(td)fin()});$("bt").textContent="";$("cont").style.display="none";$("rob").classList.add("talk");
  tm=setInterval(function(){n++;$("bt").textContent=s.slice(0,n);if(n>=s.length){clearInterval(tm);td=true;if(sd)fin();else setTimeout(fin,7000)}},45)}
-$('cont').onclick=function(){stopV();if(li<3)say(li+1);else{clearInterval(tm);$("rb").classList.remove("on");st="list";$("lst").classList.add("on")}};
+$('cont').onclick=function(){stopV();if(li<3)say(li+1);else{clearInterval(tm);$('pimg').classList.remove('on');$("rb").classList.remove("on");st="list";$("lst").classList.add("on")}};
 $("back").onclick=function(){$("lst").classList.remove("on");$("bg").style.display="none";$("c").style.display="block";st="space";rk.visible=false;cam.position.copy(home);look.set(0,0,0);cam.lookAt(look);$("hint").style.display="block"};
 function bgDraw(k){var c=$("bg"),w=c.width=innerWidth,h=c.height=innerHeight,x=c.getContext("2d"),B=BG[k],s=11,i,g;function R(){s=(s*9301+49297)%233280;return s/233280}
  g=x.createLinearGradient(0,0,0,h);g.addColorStop(0,B.s[0]);g.addColorStop(1,B.s[1]);x.fillStyle=g;x.fillRect(0,0,w,h);
@@ -193,21 +251,50 @@ function bgDraw(k){var c=$("bg"),w=c.width=innerWidth,h=c.height=innerHeight,x=c
   else{var rg=x.createRadialGradient(cx-r*.3,cy-r*.3,r*.1,cx,cy,r);rg.addColorStop(0,m[3]);rg.addColorStop(1,"rgba(60,60,60,.9)");x.fillStyle=rg;x.beginPath();x.arc(cx,cy,r,0,7);x.fill();x.fillStyle="rgba(0,0,0,.15)";for(var j=0;j<5;j++){x.beginPath();x.arc(cx+(R()-.5)*r,cy+(R()-.5)*r,r*.14,0,7);x.fill()}}});
  if(!B.b){x.fillStyle=B.g;x.beginPath();x.moveTo(0,h*.72);for(i=0;i<=12;i++)x.lineTo(i*w/12,h*(.66+R()*.08));x.lineTo(w,h);x.lineTo(0,h);x.fill();
   for(i=0;i<80;i++){var y=h*(.72+R()*.28),z=(y/h-.6)*80*(.4+R());x.fillStyle=R()>.5?B.r:"rgba(0,0,0,.28)";x.beginPath();x.ellipse(R()*w,y,z,z*.55,0,0,7);x.fill()}}}
-function lang(l){L=l;document.documentElement.lang=l;$("intro").textContent=T[l].intro;$("go").textContent=T[l].go;$("hint").textContent=T[l].hint;
+function lang(l){L=l;document.documentElement.lang=l;$("intro").textContent=T[l].intro;$("go").textContent=T[l].go;$('sel').textContent=T[l].sel;$("hint").textContent=T[l].hint;
  PL.forEach(function(p){p.lb.textContent=p[l]});
- document.querySelectorAll('#menu [data-l]').forEach(function(b){b.classList.toggle('cur',b.dataset.l==l)});$('mFacts').textContent=T[l].mf;$('mNames').textContent=T[l].mn;$('close').textContent=T[l].cl;if($('info').classList.contains('on'))showInfo(infoMode);
+ document.querySelectorAll('#menu [data-l]').forEach(function(b){b.classList.toggle('cur',b.dataset.l==l)});$('mFacts').textContent=T[l].mf;$('mNames').textContent=T[l].mn;$('close').textContent=T[l].cl;$('tx').textContent=T[l].cl;$('mTut').textContent=T[l].tu;$('mQuiz').textContent=T[l].qz;$('mSrc').textContent=T[l].fu;$('qx').textContent=T[l].cl;if($('qz').classList.contains('on'))qShow();$('skip').textContent=T[l].sk;$('h1t').textContent=T[l].h1;if($('tut').classList.contains('on'))tutShow();if($('info').classList.contains('on'))showInfo(infoMode);
  if(st=="list")buildList();if(st=="talk")say(li)}
-$("menuBtn").onclick=function(){$("menu").classList.toggle("open")};
+$("menuBtn").onclick=function(){$('hand1').classList.remove('on');$("menu").classList.toggle("open")};
 document.querySelectorAll('#menu [data-l]').forEach(function(b){b.onclick=function(){lang(b.dataset.l);$('menu').classList.remove('open')}});
 $('mFacts').onclick=function(){showInfo('f');$('menu').classList.remove('open')};
 $('mNames').onclick=function(){showInfo('n');$('menu').classList.remove('open')};
 $('close').onclick=function(){$('info').classList.remove('on')};
+var TU=[['¡Hola! Soy Poli. Te enseño a usar POLI-LUNAR en pocos pasos.','Hi! I’m Poli. I’ll show you how to use POLI-LUNAR in a few steps.'],['Toca un planeta con punto dorado. Un cohete aterrizará en él.','Tap a planet with a gold dot. A rocket will land on it.'],['Elige un objeto de la lista. Poli te lo explica con voz, imagen y datos. Toca Continuar para seguir.','Pick an object from the list. Poli explains it with voice, a picture and facts. Tap Continue to go on.'],['Si tocas un planeta sin punto, te aviso que ahí la NASA no ha perdido nada.','If you tap a planet without a dot, I’ll tell you NASA has lost nothing there.'],['En el menú ☰ cambias el idioma, ves datos curiosos y lo que significan los nombres. ¡A explorar!','In the ☰ menu you can change the language, read fun facts and see what the names mean. Go explore!']],ti=0;
+function hideHints(){$('hand1').classList.remove('on');$('skipbox').classList.remove('on')}
+function tutShow(){$('tt').textContent=T[L].tu+' '+(ti+1)+'/'+TU.length;$('tp').textContent=TU[ti][L=='es'?0:1];$('tn').textContent=ti<TU.length-1?T[L].nx:T[L].ok;$('tut').classList.add('on')}
+$('tn').onclick=function(){if(ti<TU.length-1){ti++;tutShow()}else $('tut').classList.remove('on')};
+$('tx').onclick=function(){$('tut').classList.remove('on')};
+$('mTut').onclick=function(){hideHints();$('menu').classList.remove('open');stopV();ti=0;tutShow()};
+$('skip').onclick=hideHints;
+var SRC=[['','Mariner 1: NASA Historia','Mariner 1: NASA History','https://www.nasa.gov/history/60-years-ago-mariner-1-launch-attempt-to-venus/'],['','Galileo: 30 años después (NASA)','Galileo: 30 Years Later (NASA)','https://www.nasa.gov/?p=168337'],['','Galileo: el camino difícil a Júpiter (NASA APPEL)','Galileo’s Rocky Road to Jupiter (NASA APPEL)','https://appel.nasa.gov/2011/05/13/galileos-rocky-road-to-jupiter/'],['','Catálogo de naves espaciales (NSSDCA)','Spacecraft catalog (NSSDCA)','https://nssdc.gsfc.nasa.gov/nmc/'],['','Misiones de la NASA','NASA missions','https://science.nasa.gov/missions/'],['','Planetas del sistema solar','Solar system planets','https://science.nasa.gov/solar-system/planets/'],['','Archivo de historia de la NASA','NASA History','https://history.nasa.gov/'],['','Biblioteca de imágenes de la NASA','NASA Image Library','https://images.nasa.gov/']];
+$('mSrc').onclick=function(){showInfo('s');$('menu').classList.remove('open')};
+var QZ=[[['¿Por qué se perdió el Mars Climate Orbiter?','Why was the Mars Climate Orbiter lost?'],[['Por un error de unidades (libras-fuerza y newtons)','A unit mix-up (pound-force and newtons)'],['Se quedó sin combustible','It ran out of fuel'],['Chocó con un meteorito','It hit a meteoroid']],0],
+[['¿Qué objeto salió con el espejo mal pulido?','Which object launched with a badly ground mirror?'],[['Genesis','Genesis'],['Hubble','Hubble'],['Glory','Glory']],1],
+[['¿Por qué no se abrieron los paracaídas de Genesis?','Why did Genesis’s parachutes not open?'],[['Se congelaron','They froze'],['Se los llevó el viento','The wind carried them off'],['Sus sensores estaban instalados al revés','Its sensors were installed backwards']],2],
+[['¿Qué rover se atascó en arena suave en 2009?','Which rover got stuck in soft sand in 2009?'],[['Spirit','Spirit'],['Curiosity','Curiosity'],['Sojourner','Sojourner']],0],
+[['Después de perder Mariner 1, ¿qué nave sí pasó cerca de Venus?','After Mariner 1 was lost, which spacecraft did fly past Venus?'],[['Mariner 3','Mariner 3'],['Mariner 2','Mariner 2'],['Ranger 6','Ranger 6']],1],
+[['¿Qué le pasó a la antena principal de Galileo?','What happened to Galileo’s main antenna?'],[['Se rompió en Venus','It broke at Venus'],['Apuntó al Sol','It pointed at the Sun'],['No se abrió por completo','It did not fully open']],2],
+[['¿Qué planeta tiene el volcán más alto del sistema solar?','Which planet has the tallest volcano in the solar system?'],[['Marte','Mars'],['Venus','Venus'],['Júpiter','Jupiter']],0],
+[['¿Qué planeta es menos denso que el agua?','Which planet is less dense than water?'],[['Neptuno','Neptune'],['Saturno','Saturn'],['Marte','Mars']],1],
+[['¿Qué significa el nombre Marte?','What does the name Mars mean?'],[['Dios romano del mar','Roman god of the sea'],['Diosa del amor','Goddess of love'],['Dios romano de la guerra','Roman god of war']],2],
+[['¿Qué explotó en Apollo 13?','What exploded on Apollo 13?'],[['Un tanque de oxígeno','An oxygen tank'],['El motor principal','The main engine'],['Un paracaídas','A parachute']],0],
+[['¿Cuánto tarda la luz del Sol en llegar a la Tierra?','How long does sunlight take to reach Earth?'],[['8 segundos','8 seconds'],['8 minutos','8 minutes'],['8 horas','8 hours']],1],
+[['¿Qué pasó con las cámaras de Ranger 6?','What happened to Ranger 6’s cameras?'],[['Nunca se encendieron','They never turned on'],['Salieron borrosas','Photos came out blurry'],['Se llenaron de polvo','They filled with dust']],0]],qi=0,qs=0,qa=false;
+function qShow(){var el=$('qa'),j=L=='es'?0:1;$('qt').textContent=T[L].qz;el.innerHTML='';$('qn').style.display='none';
+if(qi>=QZ.length){$('qp').textContent=T[L].sc+' '+qs+' '+T[L].de+' '+QZ.length+'.';$('qn').textContent=T[L].rt;$('qn').style.display='inline-block';qa=true;return}
+var q=QZ[qi];qa=false;$('qp').textContent=T[L].pq+' '+(qi+1)+'/'+QZ.length+': '+q[0][j];
+q[1].forEach(function(o,k){var d=document.createElement('div');d.className='op';d.tabIndex=0;d.setAttribute('role','button');d.textContent=o[j];d.onclick=function(){if(qa)return;qa=true;if(k==q[2])qs++;Array.prototype.forEach.call(el.children,function(c,m){if(m==q[2])c.classList.add('ok');else if(m==k)c.classList.add('no')});$('qn').textContent=T[L].nx;$('qn').style.display='inline-block'};el.appendChild(d)})}
+$('qn').onclick=function(){if(qi>=QZ.length){qi=0;qs=0}else qi++;qShow()};
+$('qx').onclick=function(){$('qz').classList.remove('on')};
+$('mQuiz').onclick=function(){hideHints();stopV();$('menu').classList.remove('open');qi=0;qs=0;qShow();$('qz').classList.add('on')};
+function setPic(o){var d=$('pimg'),t=IM[o[0]]||'sat',s=o[0].toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''),u='img/'+s+'.jpg',im=new Image();d.style.backgroundImage='none';d.innerHTML=`<div class='st'></div><div class='ob${t=='cap'||t=='lan'?' fall':''}'>${IMG[t]}</div>`;d.classList.add('on');im.onload=function(){if(obj==o&&st=='talk'){d.innerHTML='';d.style.backgroundImage='linear-gradient(rgba(0,0,0,.4),rgba(0,0,0,.4)),url('+u+')'}};im.src=u}
 $('snd').onclick=function(){mute=!mute;$('snd').textContent=mute?'🔇':'🔊';if(mute)stopV()};
-function showInfo(m){infoMode=m;stopV();var j=L=='es'?1:2,h='';$('it').textContent=m=='f'?T[L].mf:T[L].mn;
+function showInfo(m){infoMode=m;stopV();var j=L=='es'?1:2,h='';$('it').textContent=m=='f'?T[L].mf:m=='s'?T[L].fu:T[L].mn;
 if(m=='f')FACTS.forEach(function(f){h+='<div class="ic"><span>'+f[0]+'</span><p>'+f[j]+'</p></div>'});
-else NM.forEach(function(n){var p=PL.filter(function(x){return x.k==n[0]})[0];h+='<div class="ic"><b>'+p[L]+'</b><p>'+n[j]+'</p></div>'});
+else if(m=='s'){h=`<div class='ic'><p>${T[L].fn}</p></div>`;SRC.forEach(function(s){h+=`<div class='ic'><b>${s[j]}</b><p><a href='${s[3]}' target='_blank' rel='noopener'>${s[3]}</a></p></div>`})}else NM.forEach(function(n){var p=PL.filter(function(x){return x.k==n[0]})[0];h+='<div class="ic"><b>'+p[L]+'</b><p>'+n[j]+'</p></div>'});
 $('icards').innerHTML=h;$('info').classList.add('on')}
-$("go").onclick=function(){st="space";$("splash").classList.add("off");$("hint").style.display="block"};
+$("go").onclick=function(){st="space";$('hand1').classList.add('on');$('skipbox').classList.add('on');$("splash").classList.add("off");$("hint").style.display="block"};
 var rc=new THREE.Raycaster(),ms=new THREE.Vector2();
 $("c").addEventListener("pointerdown",function(e){if(st!="space")return;ms.set(e.clientX/W*2-1,-(e.clientY/H)*2+1);rc.setFromCamera(ms,cam);var h=rc.intersectObjects(hits);if(h.length)pick(h[0].object.userData.p)});
 addEventListener("resize",size);
