@@ -1,0 +1,11 @@
+{
+  "name": "POLI-LUNAR",
+  "short_name": "POLI-LUNAR",
+  "description": "Explora los objetos de la NASA que permanecen en el espacio con POLI.",
+  "start_url": "/Poli-Lunar/",
+  "scope": "/Poli-Lunar/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#07152e",
+  "theme_color": "#07152e"
+}
