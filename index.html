@@ -302,5 +302,14 @@ $("c").addEventListener("pointerdown",function(e){if(st!="space")return;ms.set(e
 addEventListener("resize",size);
 lang("es");size();requestAnimationFrame(frame);
 </script>
+ <script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/Poli-Lunar/sw.js")
+      .then(() => console.log("POLI-LUNAR listo"))
+      .catch(error => console.log("Error:", error));
+  });
+}
+ </script>
 </body>
 </html>
